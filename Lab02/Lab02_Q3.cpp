@@ -1,7 +1,7 @@
 class Solution {
 public:
     int findLucky(vector<int>& arr) {
-        int largestLucky = -1; // Count = 1 (assignment)
+        int largestLucky = -1;//先設-1代表還沒找到 // Count = 1 (assignment)
 
         for(int i=1; i < arr.size(); i++)
         // Loop initialization: Count = 1 (assignment i = 1)
@@ -9,8 +9,9 @@ public:
 		// - Comparison: Count = 1 (i < arr.size())
 		// - Increment: Count = 1 (i++)
         {
-            int count=0; // Count = 1 (assignment)
-
+            int count=0;//記錄出現幾次 // Count = 1 (assignment)
+			
+			//計算數字出現幾次 
             for(int j=0; j < arr.size(); j++)
             // Loop initialization: Count = 1 (assignment j = 0)
 			// Each iteration:
@@ -25,7 +26,7 @@ public:
 
             if(arr[i] == count) // Count = 1 (comparison)
             {
-                if(arr[i] > largestLucky) // Count = 1 (comparison)
+                if(arr[i] > largestLucky)//找最大值 // Count = 1 (comparison)
                 {
                     largestLucky = arr[i]; // Count = 1 (assignment)
                 }
