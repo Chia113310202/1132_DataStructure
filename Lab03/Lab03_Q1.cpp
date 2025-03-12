@@ -44,9 +44,6 @@ public:
 		cout << endl;
 	}
     
-        
-    
-
     //加法
     Polynomial add(const Polynomial &p) const 
 	{
