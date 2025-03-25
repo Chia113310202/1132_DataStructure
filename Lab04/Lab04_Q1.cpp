@@ -26,17 +26,14 @@ public:
     }
 
     Card pop() {
-    	if(!isEmpty())
+    	if(!isEmpty()) // 如果 stack不是空的話 
     	{
-    		stack.pop_back();
+    		stack.pop_back(); // 取出上面的牌 
 		}
     }
 
     bool isEmpty() const {
-    	if(stack.size()==0)
-    		return true;
-    	else
-    		return false;
+    	return stack.empty(); // 檢查 stack是不是空的 
     }
 };
 
@@ -60,17 +57,18 @@ public:
 
     //洗牌(Hint:使用shuffle函數)
     void shuffleDeck() {
+    	// 用 chrono取得隨機種子 
     	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    	// 用 shuffle函數隨機排 cards
     	shuffle(cards.begin(), cards.end(), default_random_engine(seed));
     }
 
-    //發牌
+    //發牌 
     void drawAllCards() {
-        for (auto& card : cards) {
+        for (auto& card : cards) { // auto是用來自動推導變數的類型 
             card.display(); // 顯示每一張牌
         }
     }
-
 };
 
 int main() {
