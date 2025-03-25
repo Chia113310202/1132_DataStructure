@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <random>
+#include <chrono>
 using namespace std;
 // 表示單張撲克牌的類別
 class Card {
@@ -21,18 +22,21 @@ private:
 
 public:
     void push(const Card& card) {
-    	cards.push_back(card)
+    	stack.push_back(card);
     }
 
     Card pop() {
-    	if(!isEmpty)
+    	if(!isEmpty())
     	{
-    		cards.pop_back(card)
+    		stack.pop_back();
 		}
     }
 
     bool isEmpty() const {
-    	return cards.empty();
+    	if(stack.size()==0)
+    		return true;
+    	else
+    		return false;
     }
 };
 
@@ -56,13 +60,17 @@ public:
 
     //洗牌(Hint:使用shuffle函數)
     void shuffleDeck() {
-        
+    	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    	shuffle(cards.begin(), cards.end(), default_random_engine(seed));
     }
 
     //發牌
     void drawAllCards() {
-
+        for (auto& card : cards) {
+            card.display(); // 顯示每一張牌
+        }
     }
+
 };
 
 int main() {
@@ -72,6 +80,3 @@ int main() {
     deck.drawAllCards(); //依序取出堆疊內的牌並顯示
     return 0;
 }
-
-
-
