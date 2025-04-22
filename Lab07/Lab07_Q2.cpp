@@ -60,15 +60,7 @@ public:
         cout << node->value << " ";    // 訪問當前節點
         inorderTraversal(node->right); // 遍歷右子樹
     }
-	// 後序遍歷
-    void postorderTraversal(TreeNode* node) {
-        if (node == nullptr) return; // 如果節點為空，忽略
 
-        postorderTraversal(node->left);  // 遍歷左子樹
-        postorderTraversal(node->right); // 遍歷右子樹
-        cout << node->value << " ";    // 訪問當前節點
-        
-    }
     // 找出左右子樹中的最大值 
     int findTreeMax(TreeNode* node){
     	if (node == nullptr) return 0;
