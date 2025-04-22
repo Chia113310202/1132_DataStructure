@@ -60,7 +60,7 @@ public:
         cout << node->value << " ";    // 訪問當前節點
         inorderTraversal(node->right); // 遍歷右子樹
     }
-
+	// 後序遍歷
     void postorderTraversal(TreeNode* node) {
         if (node == nullptr) return; // 如果節點為空，忽略
 
@@ -85,6 +85,7 @@ int main() {
     tree.inorderTraversal(tree.root);
     cout << endl;
     
+    // 後序遍歷輸出
     cout << "Postorder Traversal: ";
     tree.postorderTraversal(tree.root);
     cout << endl;
