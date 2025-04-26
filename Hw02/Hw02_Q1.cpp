@@ -31,12 +31,12 @@ public:
             cout << "堆疊為空，無法取出元素。\n";
             return '\0';            // 結束這次 pop()
         }
-
+	    
         char poppedValue = top->data; // 取得頂端元素的值
         Node* temp = top;            // 用 temp 暫存目前頂端節點
         top = top->next;             // 更新頂端為下一個節點
         delete temp;                 // 釋放記憶體，刪除原頂端節點
-		return poppedValue;          // 回傳剛剛的資料 
+	return poppedValue;          // 回傳剛剛的資料 
     }  
 
     // Peek 操作：取得頂端元素但不移除
