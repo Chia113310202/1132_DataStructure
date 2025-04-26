@@ -31,12 +31,12 @@ public:
             cout << "堆疊為空，無法取出元素。\n";
             return '\0';            // 結束這次 pop()
         }
-	    
+
         char poppedValue = top->data; // 取得頂端元素的值
         Node* temp = top;            // 用 temp 暫存目前頂端節點
         top = top->next;             // 更新頂端為下一個節點
         delete temp;                 // 釋放記憶體，刪除原頂端節點
-	return poppedValue;          // 回傳剛剛的資料 
+		return poppedValue;          // 回傳剛剛的資料 
     }  
 
     // Peek 操作：取得頂端元素但不移除
@@ -71,7 +71,7 @@ public:
         top = newNode;
     }
 
-    double pop() {
+     double pop() {
         if (top == nullptr) return 0;
         double value = top->data;
         DoubleNode* temp = top;
@@ -89,7 +89,7 @@ public:
 int precedence(char op) {
 	if (op == '+' || op == '-') return 1;
 	if (op == '*' || op == '/' || op == '%') return 2;
-	if (op == '^' ) return 3;
+	if (op == '^') return 3;
 	return 0;
 
 }
@@ -102,9 +102,13 @@ void InfixToPostfix(const char* infix, char* postfix) {
     for (int i = 0; i < strlen(infix); i++) {
         char c = infix[i];
         
-		// 如果是英文或數字，就直接加入到 postfix 
+		// 如果是英文或數字0，就直接加入到 postfix 
         if (isalnum(c)) {
-            postfix[j++] = c;
+            while (isalnum(infix[i])) {
+                postfix[j++] = infix[i++];  // 只要還是英文或數字就繼續加到 postfix 
+            }
+            postfix[j++] = ' '; // 後面沒有數字後加一個空隔
+            i--; // 讀完這個數之後會 i++，所以要減回去 
         }
         // 如果是 (，就直接放到 stack
         else if (c == '(') {
@@ -146,11 +150,20 @@ double evaluatePostfix(const char* postfix) {
 
         // 如果是數字就加進堆疊
         if (isdigit(c)) {
-            double num = c - '0'; // c - '0'是用 ASCII碼 
+            //double num = c - '0'; // c - '0'是用 ASCII碼 
+            double num = 0;
+            
+            while (isdigit(postfix[i])) {
+        		num = num * 10 + (postfix[i] - '0'); // 讀到的第一個數字 num還是 0，第二個數字時第一個數字就要 *10變成十位數 
+        		i++;
+    		}
             stack.push(num);
         }
+        else if (c == ' ') {
+    		continue; // 空格就直接跳過
+		}
         // 是運算子就取出兩個數去計算 
-        else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%') {
+        else if(c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%') {
             double b = stack.pop(); // 堆疊最上面的數字 
             double a = stack.pop(); // 最上面數字的下一個 
 
@@ -175,7 +188,7 @@ int main() {
     cout << "Postfix expression: " << postfix << endl; // 輸出後序表達式
 
 	double result = evaluatePostfix(postfix);
-    cout << "Result: " <<round(result*10)/10.0 << endl;
+    cout << "Result: " << round(result*10)/10.0 << endl;
     
     return 0;
 }
