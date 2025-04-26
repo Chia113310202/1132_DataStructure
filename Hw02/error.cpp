@@ -104,10 +104,7 @@ void InfixToPostfix(const char* infix, char* postfix) {
         char n = infix[i++];
         i--;
 		// 如果是英文或數字0，就直接加入到 postfix 
-        if (isalnum(c) && isalnum(n)) {
-            while (isalnum(infix[i])) {
-                postfix[j++] = infix[i++];  // 只要還是英文或數字就繼續加到 postfix 
-            }
+        if (isalnum(c)) {
             while (isdigit(infix[i]) || infix[i] == '.') {
                 postfix[j++] = infix[i++];
             }
