@@ -163,19 +163,19 @@ double evaluatePostfix(const char* postfix) {
     		if (postfix[i] == '.') {
                 i++; // 跳過小數點
                 char n = postfix[i]; // 把目前的小數點以後的數字放進 n
-                double decimal = 0;
-                double place = 0.1;
+                double decimal = 0; // 小數點後面一開始是 0 
+                double place = 0.1; // 小數點後第一位是 *0.1 
                 
                 while (isdigit(n)) {
-        			decimal = decimal + (n - '0')*place; 
-					place = place*0.1;
+        			decimal = decimal + (n - '0') * place;  
+					place = place * 0.1; // 因為處理完小數點後一位了，後一位要再 *0.1
         			i++;
         			n = postfix[i];
     			}
-    			num = num + decimal;
+    			num = num + decimal; // 整數加上小數部分 
             }
             stack.push(num);
-            i--;
+            i--; // while有加了，要減回去 
         }
         else if (c == ' ') {
     		continue; // 空格就直接跳過
