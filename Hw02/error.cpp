@@ -101,12 +101,14 @@ void InfixToPostfix(const char* infix, char* postfix) {
 
     for (int i = 0; i < strlen(infix); i++) {
         char c = infix[i];
-        char n = infix[i++];
-        i--;
-		// 如果是英文或數字0，就直接加入到 postfix 
+        
+		// 如果是英文或數字，就直接加入到 postfix 
         if (isalnum(c)) {
+            //while (isalnum(infix[i])) {
+            //    postfix[j++] = infix[i++];   
+            //}
             while (isdigit(infix[i]) || infix[i] == '.') {
-                postfix[j++] = infix[i++];
+                postfix[j++] = infix[i++];// 只要還是數字或 .就繼續加到 postfix
             }
             postfix[j++] = ' '; // 後面沒有數字後加一個空隔
             i--; // 讀完這個數之後會 i++，所以要減回去 
@@ -148,7 +150,7 @@ double evaluatePostfix(const char* postfix) {
 
     for (int i = 0; postfix[i] != '\0'; i++) {
         char c = postfix[i]; //讀 postfix每一個字 
-
+		
         // 如果是數字就加進堆疊
         if (isdigit(c)) {
             //double num = c - '0'; // c - '0'是用 ASCII碼 
@@ -158,7 +160,22 @@ double evaluatePostfix(const char* postfix) {
         		num = num * 10 + (postfix[i] - '0'); // 讀到的第一個數字 num還是 0，第二個數字時第一個數字就要 *10變成十位數 
         		i++;
     		}
+    		if (postfix[i] == '.') {
+                i++; // 跳過小數點
+                char n = postfix[i]; // 把目前的小數點以後的數字放進 n
+                double decimal = 0;
+                double place = 0.1;
+                
+                while (isdigit(n)) {
+        			decimal = decimal + (n - '0')*place; 
+					place = place*0.1;
+        			i++;
+        			n = postfix[i];
+    			}
+    			num = num + decimal;
+            }
             stack.push(num);
+            i--;
         }
         else if (c == ' ') {
     		continue; // 空格就直接跳過
