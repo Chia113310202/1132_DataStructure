@@ -101,15 +101,23 @@ void InfixToPostfix(const char* infix, char* postfix) {
 
     for (int i = 0; i < strlen(infix); i++) {
         char c = infix[i];
-        
-		// 如果是英文或數字，就直接加入到 postfix 
-        if (isalnum(c)) {
-            postfix[j++] = c;
+        char n = infix[i++];
+        i--;
+		// 如果是英文或數字0，就直接加入到 postfix 
+        if (isalnum(c) && isalnum(n)) {
+            while (isalnum(infix[i])) {
+                postfix[j++] = infix[i++];  // 只要還是英文或數字就繼續加到 postfix 
+            }
+            postfix[j++] = ' '; // 後面沒有數字後加一個空隔
+            i--; // 讀完這個數之後會 i++，所以要減回去 
         }
-        
-        else if (!isalnum(infix[i + 1])) { // 如果下一個不是數字，就代表這個數結束了，所以加空格分開 
-			postfix[j++] = ' ';
-		} 
+        else if(isalnum(c) && n == '.'){
+            while (isdigit(infix[i]) || infix[i] == '.') {
+                postfix[j++] = infix[i++];
+            }
+            postfix[j++] = ' ';
+            i--;
+        }
         // 如果是 (，就直接放到 stack
         else if (c == '(') {
             stack.push(c);
