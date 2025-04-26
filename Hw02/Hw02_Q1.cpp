@@ -32,7 +32,7 @@ public:
             return '\0';            // 結束這次 pop()
         }
 
-        int poppedValue = top->data; // 取得頂端元素的值
+        char poppedValue = top->data; // 取得頂端元素的值
         Node* temp = top;            // 用 temp 暫存目前頂端節點
         top = top->next;             // 更新頂端為下一個節點
         delete temp;                 // 釋放記憶體，刪除原頂端節點
@@ -54,15 +54,15 @@ public:
 };
 
 struct DoubleNode {
-    int data;
+    double data;//儲存有小數的數值
     DoubleNode* next;
 };
-//計算數值 InStack
+//計算數值 IntStack
 class IntStack {
 private:
     DoubleNode* top;
 public:
-    IntStack() { top = nullptr; }
+    IntStack() { top = nullptr; }//construct
 
     void push(double val) {
         DoubleNode* newNode = new DoubleNode();
@@ -71,7 +71,7 @@ public:
         top = newNode;
     }
 
-    int pop() {
+     double pop() {
         if (top == nullptr) return 0;
         double value = top->data;
         DoubleNode* temp = top;
@@ -138,7 +138,7 @@ void InfixToPostfix(const char* infix, char* postfix) {
     postfix[j] = '\0'; // 結尾
 }
 
-int evaluatePostfix(const char* postfix) {
+double evaluatePostfix(const char* postfix) {
     IntStack stack; //建一個堆疊，拿來放運算過程的結果 
 
     for (int i = 0; postfix[i] != '\0'; i++) {
@@ -175,7 +175,7 @@ int main() {
     cout << "Postfix expression: " << postfix << endl; // 輸出後序表達式
 
 	double result = evaluatePostfix(postfix);
-    cout << "Result: " << result << endl;
+    cout << "Result: " <<round(result*10)/10.0 << endl;
     
     return 0;
 }
