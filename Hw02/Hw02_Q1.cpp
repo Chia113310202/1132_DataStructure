@@ -71,7 +71,7 @@ public:
         top = newNode;
     }
 
-     double pop() {
+    double pop() {
         if (top == nullptr) return 0;
         double value = top->data;
         DoubleNode* temp = top;
@@ -88,8 +88,8 @@ public:
 // 判斷運算子(加減乘除) 的優先順序
 int precedence(char op) {
 	if (op == '+' || op == '-') return 1;
-	if (op == '*' || op == '/') return 2;
-	if (op == '^' || op == '%') return 3;
+	if (op == '*' || op == '/' || op == '%') return 2;
+	if (op == '^' ) return 3;
 	return 0;
 
 }
