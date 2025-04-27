@@ -132,16 +132,17 @@ void InfixToPostfix(const char* infix, char* postfix) {
             while (!stack.isEmpty() && precedence(stack.peek()) >= precedence(c)) {
                 postfix[j++] = stack.pop();
             }
+			postfix[j++] = ' '; // 運算符號後面加一個空隔跟數字分開
             stack.push(c); // 最後再把自己放入 stack 
         }
     }
 
     // 清空堆疊剩下的東西
     while (!stack.isEmpty()) {
-    	// 把堆疊裡剩下的運算子都拿出來加到 postfix
-        postfix[j++] = stack.pop();
+    	postfix[j++] = ' '; // 運算符號前面加一個空隔跟數字分開
+    	
+        postfix[j++] = stack.pop(); // 把堆疊裡剩下的運算子都拿出來加到 postfix
     }
-
     postfix[j] = '\0'; // 結尾
 }
 
@@ -206,7 +207,7 @@ int main() {
     cout << "Postfix expression: " << postfix << endl; // 輸出後序表達式
 
 	double result = evaluatePostfix(postfix);
-    cout << "Result: " << round(result*10)/10.0 << endl;
+    cout << "Result: " << round(result * 10) / 10.0 << endl;
     
     return 0;
 }
