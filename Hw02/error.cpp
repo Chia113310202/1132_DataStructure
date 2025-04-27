@@ -102,13 +102,17 @@ void InfixToPostfix(const char* infix, char* postfix) {
     for (int i = 0; i < strlen(infix); i++) {
         char c = infix[i];
         
-		// 如果是英文或數字，就直接加入到 postfix 
-        if (isalnum(c)) {
-            //while (isalnum(infix[i])) {
-            //    postfix[j++] = infix[i++];   
-            //}
+		// 如果是英文或數字、第一位就是 -號，或是 (後面是負號就直接加入到 postfix 
+        if (isalnum(c) || (c == '-' && (i == 0 || infix[i-1] == '('))) {
+            if (infix[i] == '-'){
+            	postfix[j++] = c;
+            	i++;
+            	c = infix[i]; // 把負號跟數字合成一個數 
+			}
             while (isdigit(infix[i]) || infix[i] == '.') {
-                postfix[j++] = infix[i++];// 只要還是數字或 .就繼續加到 postfix
+                postfix[j++] = c;// 只要還是數字或 . 就繼續加到 postfix
+                i++;
+            	c = infix[i];
             }
             postfix[j++] = ' '; // 後面沒有數字後加一個空隔
             i--; // 讀完這個數之後會 i++，所以要減回去 
@@ -153,9 +157,13 @@ double evaluatePostfix(const char* postfix) {
         char c = postfix[i]; //讀 postfix每一個字 
 		
         // 如果是數字就加進堆疊
-        if (isdigit(c)) {
+        if (isdigit(c) || (c == '-' && (i == 0 || postfix[i-1] == '('))) {
             //double num = c - '0'; // c - '0'是用 ASCII碼 
             double num = 0;
+            
+            if (postfix[i] == '-'){
+            	i++; // 如果是負數就直接讀數字是多少，等下再加回去 
+			}
             
             while (isdigit(postfix[i])) {
         		num = num * 10 + (postfix[i] - '0'); // 讀到的第一個數字 num還是 0，第二個數字時第一個數字就要 *10變成十位數 
@@ -175,6 +183,9 @@ double evaluatePostfix(const char* postfix) {
     			}
     			num = num + decimal; // 整數加上小數部分 
             }
+            if (c == '-'){ // 如果剛剛讀的是負數，現在把負號加回去 
+            	num = -num;
+			}
             stack.push(num);
             i--; // while有加了，要減回去 
         }
