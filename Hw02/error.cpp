@@ -124,7 +124,7 @@ void InfixToPostfix(const char* infix, char* postfix) {
     			if (top == '(') { // 遇到 ( 就停 
         			break;  
     			}
-    			postfix[j++] = top;  // 其他的加進 postfix
+    			postfix[j++] = top; // 其他的加進 postfix
     			postfix[j++] = ' '; // 運算子後加空格
   			}
         }
@@ -132,6 +132,7 @@ void InfixToPostfix(const char* infix, char* postfix) {
         	// stack頂端的運算值優先度比較高，就先拿出來 
             while (!stack.isEmpty() && precedence(stack.peek()) >= precedence(c)) {
                 postfix[j++] = stack.pop();
+                postfix[j++] = ' '; // 運算子後加空格
             }
             stack.push(c); // 最後再把自己放入 stack 
         }
@@ -140,6 +141,7 @@ void InfixToPostfix(const char* infix, char* postfix) {
     // 清空堆疊剩下的東西
     while (!stack.isEmpty()) {
     	postfix[j++] = stack.pop(); // 把堆疊裡剩下的運算子都拿出來加到 postfix
+    	postfix[j++] = ' '; // 運算子後加空格
     }
     postfix[j] = '\0'; // 結尾
 }
