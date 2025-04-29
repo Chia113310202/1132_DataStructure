@@ -58,18 +58,39 @@ private:
 
     // --- 私有的刪除方法 ---
     TreeNode* deleteNode(TreeNode* node, int val) {
-        
-        if (val < node->data) { //如果要刪的值比目前這個節點小,往左子樹找
-            node->left = deleteNode(node->left, val);
+        if (node == nullptr) { // 如果在樹裡面找不到耀珊的數字就直接跳過 
+            return nullptr; 
         }
-        else if (val > node->data) { //如果要刪的值比目前這個節點大,往右子樹找
-            node->right = deleteNode(node->right, val);
-        }
-        else { //如果要刪的值等於目前這個節點,進入刪除的三種情況 //從右邊遞補
-            node = deleteNode(node->right, val);
-        }
-        return node; // 回傳更新後的節點
 
+        if (val < node->data) {
+            node->left = deleteNode(node->left, val); // 如果要刪除的值比目前節點小，找左子樹
+        }
+        else if (val > node->data) {
+            node->right = deleteNode(node->right, val); // 如果要刪除的值比目前節點大，找右子樹
+        }
+        else{
+        	// 目標節點完全沒有子節點就直接刪除
+        	if (node->left == nullptr && node->right == nullptr){
+        		delete node;
+        		return nullptr;
+			}
+			// 目標節點只有右邊或左邊有子節點
+			else if (node->left == nullptr){
+				TreeNode* temp = node->right; // 因為左邊沒有子節點，所以 temp =右節點 
+				return temp;
+			}
+			else if (node->right == nullptr){ // 因為右邊沒有子節點，所以 temp =左節點
+				TreeNode* temp = node->left;
+				return temp;
+			}
+			// 目標節點兩邊都有子節點
+			else{
+				TreeNode* temp = findMin(node->right); // 找右子樹最小值 
+				node->data = temp->data; // 把要刪除的數字替換成最小值 
+				node->right = deleteNode(node->right, temp->data); // 再去右子樹把最小值刪掉，不然會有兩個相同數字 
+			}
+		}
+		return node;
     }
 
     // --- 私有的找最小值方法 ---
@@ -149,5 +170,3 @@ int main() {
 
     return 0;
 }
-
-
