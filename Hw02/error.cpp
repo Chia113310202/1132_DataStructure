@@ -86,7 +86,7 @@ public:
     }
 };
 
-// 檢查輸入括號對不對 
+// 檢查輸入括號是否對稱出現
 bool checkParentheses(const char* infix){
 	int count = 0; 
 	for (int i = 0; infix[i] != '\0'; i++) {
@@ -100,7 +100,16 @@ bool checkParentheses(const char* infix){
         	if (count < 0) return false; // 右括號比左括號先出現 
 		}
 	}
-	if (count == 0) return true;	    
+	if (count == 0) return true;
+	else return false;
+}
+bool CheckOperator(const char* postfix){
+    for(int i = 0 ; postfix[i] != '\0' ; i++){
+        char c = postfix[i];
+        if ( c != '+' || c != '-' || c != '*' || c != '/' || c != '%' || c != '^')
+            return true;
+    }
+    return false;
 }
 
 // 判斷運算子(加減乘除) 的優先順序
@@ -229,17 +238,24 @@ double evaluatePostfix(const char* postfix) {
 
 int main() {
     char infix[100], postfix[100];
-    
-    while (true){
+    int test =1;
+    InfixToPostfix(infix, postfix); // 轉換為後序表達式
+    while (test){
     	cout << "Enter an Infix expression: ";
     	cin >> infix; // 輸入中序表達式
     
     	// 檢查輸入括號
-		if (!checkParentheses(infix)) {
-        	cout << "錯誤 -> 括號不成對！" << endl;
+		if (!checkParentheses(infix)) {//程式在90行
+        	cout << "錯誤 -> 括號不成對!!！ "<< "請重新輸入" << endl;
         	continue; // 回去重新輸入 
     	}
-	}
+    	else if(!CheckOperator(postfix)){
+    	    cout << "錯誤 -> 有非規定符號!!！ "<< "請重新輸入" << endl;
+        	continue; // 回去重新輸入 
+    	}
+    	else
+    	    test--;
+    }
 	
     InfixToPostfix(infix, postfix); // 轉換為後序表達式
     cout << "Postfix expression: " << postfix << endl; // 輸出後序表達式
