@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cctype>
 #include <cstring>
+#include <iomanip>
 #include <cmath>
 using namespace std;
 
@@ -84,6 +85,23 @@ public:
         return top == nullptr;
     }
 };
+
+// 檢查輸入括號對不對 
+bool checkParentheses(const char* infix){
+	int count = 0; 
+	for (int i = 0; infix[i] != '\0'; i++) {
+		// 遇到一個左括號 +1 
+        if (infix[i] == '(') {
+            count++;
+        }
+        // 遇到一個右括號 -1 
+        else if (infix[i] == ')'){
+        	count--;
+        	if (count < 0) return false; // 右括號比左括號先出現 
+		}
+	}
+	if (count == 0) return true;	    
+}
 
 // 判斷運算子(加減乘除) 的優先順序
 int precedence(char op) {
@@ -211,14 +229,29 @@ double evaluatePostfix(const char* postfix) {
 
 int main() {
     char infix[100], postfix[100];
-    cout << "Enter an Infix expression: ";
-    cin >> infix; // 輸入中序表達式
-
+    
+    while (true){
+    	cout << "Enter an Infix expression: ";
+    	cin >> infix; // 輸入中序表達式
+    
+    	// 檢查輸入括號
+		if (!checkParentheses(infix)) {
+        	cout << "錯誤 -> 括號不成對！" << endl;
+        	continue; // 回去重新輸入 
+    	}
+	}
+	
     InfixToPostfix(infix, postfix); // 轉換為後序表達式
     cout << "Postfix expression: " << postfix << endl; // 輸出後序表達式
 
 	double result = evaluatePostfix(postfix);
-    cout << "Result: " << round(result * 10) / 10.0 << endl;
+	if (fabs(result - round(result)) < 1e-9) {
+        cout << "Result: " << fixed << setprecision(1) << result << endl;
+    } 
+    else {
+        cout << "Result: " << fixed << setprecision(6) << result << endl;
+    }
+    
     
     return 0;
 }
