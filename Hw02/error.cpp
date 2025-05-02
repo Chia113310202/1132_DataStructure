@@ -86,13 +86,16 @@ public:
     }
 };
 
+// 檢查數字中間有沒有空格
 bool CheckSpaceBetNum(const char* infix) {
     for (int i = 0; infix[i]; i++) {
         if (isdigit(infix[i]) || infix[i] == '.') {
-            int j = i + 1;
-            while (infix[j] == ' ') j++; // 跳過空格
-            if (isdigit(infix[j]) || infix[j] == '.') {
-                return true; // 數字空格數字，錯誤
+            int j = i + 1;  // 檢查下一個是字還是運算子 
+            while (infix[j] == ' ') {
+				j++; // 遇到空格就跳過
+			} 
+            if (isdigit(infix[j]) || infix[j] == '.') { // 如果跳過空格後，下一個還是數字或小數點，代表數字之間有空格
+                return true;
             }
         }
     }
@@ -351,7 +354,7 @@ int main() {
     return 0;
 }
 
-//可以輸入有空格的算式
+//可以輸入有空格的算式3. 
 //括號是否對稱出現
 //輸入符號是否符合要求
 //運算符號數量有沒有多(負數不算一個運算子)
