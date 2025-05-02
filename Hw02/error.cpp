@@ -139,6 +139,7 @@ bool CheckOperatornum(const char *infix){
         if ( c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^'){
 			if (c == '-' && (i == 0 || infix[i - 1] == '(')) {
                 // 判斷 -是運算子還是負號，負號會在第一位或是 (後面 
+                
                 continue;
             }
 			opnum++;
@@ -232,13 +233,15 @@ double evaluatePostfix(const char* postfix) {
         char c = postfix[i]; //讀 postfix每一個字 
 		
         // 如果是數字就加進堆疊
-        if (isdigit(c) || (c == '-' && (i == 0 || postfix[i-1] == '('))) {
+        if (isdigit(c) || (c == '-' && (i == 0 || postfix[i - 1] == ' '))){
             //double num = c - '0'; // c - '0'是用 ASCII碼 
             double num = 0;
             
-            if (postfix[i] == '-'){
-            	i++; // 如果是負數就直接讀數字是多少，等下再加回去 
-			}
+            bool isNegative = false;
+            if (postfix[i] == '-') {
+                isNegative = true;
+                i++; // 跳過負號
+            }
             
             while (isdigit(postfix[i])) {
         		num = num * 10 + (postfix[i] - '0'); // 讀到的第一個數字 num還是 0，第二個數字時第一個數字就要 *10變成十位數 
@@ -258,7 +261,8 @@ double evaluatePostfix(const char* postfix) {
     			}
     			num = num + decimal; // 整數加上小數部分 
             }
-            if (c == '-'){ // 如果剛剛讀的是負數，現在把負號加回去 
+            
+            if (isNegative ){ // 如果剛剛讀的是負數，現在把負號加回去 
             	num = -num;
 			}
             stack.push(num);
@@ -283,6 +287,7 @@ double evaluatePostfix(const char* postfix) {
 
     return stack.pop(); // 最後的答案
 }
+
 
 int main() {
     char infix[100], postfix[100];
@@ -330,3 +335,4 @@ int main() {
 //括號是否對稱出現
 //輸入符號是否符合要求
 //運算符號數量有沒有多(負數不算一個運算子)
+//負數加減做好了
