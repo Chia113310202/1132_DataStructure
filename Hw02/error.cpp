@@ -87,33 +87,34 @@ public:
 };
 
 // 檢查數字中間有沒有空格
-bool CheckSpaceBetNum(const char* infix) {
-    for (int i = 0; infix[i]; i++) {
-        if (isdigit(infix[i]) || infix[i] == '.') {
-            int j = i + 1;  // 檢查下一個是字還是運算子 
-            while (infix[j] == ' ') {
-				j++; // 遇到空格就跳過
-			} 
-            if (isdigit(infix[j]) || infix[j] == '.') { // 如果跳過空格後，下一個還是數字或小數點，代表數字之間有空格
-                return true;
-            }
+bool CheckSpaceBetNum(const char* rawInput) {
+    for (int i = 0; rawInput[i]; i++) {
+        if (isdigit(rawInput[i]) || rawInput[i] == '.') {
+            int j = i + 1;
+            while (rawInput[j] == ' ') j++;
+            if (isdigit(rawInput[j]) || rawInput[j] == '.') return true;
         }
     }
     return false;
 }
 
 // 把 infix裡面的空格去掉
-void finalInfix(char* infix, int size) {
+bool finalInfix(char* infix, int size) {
     char temp[100]; 
-    cin.getline(temp, 100); // 可以輸入有空格的算式到 temp
+    cin.getline(temp, 100);
+
+    if (CheckSpaceBetNum(temp)) {
+        return false;
+    }
 
     int j = 0;
     for (int i = 0; temp[i] != '\0'; i++) {
-        if (temp[i] != ' ') { // 不是空格就加到 infix 
+        if (temp[i] != ' ') {
             infix[j++] = temp[i];
         }
     }
-    infix[j] = '\0'; // 結尾
+    infix[j] = '\0';
+    return true;
 }
 
 // 檢查輸入括號是否對稱出現
@@ -310,29 +311,25 @@ int main() {
     int test =1;
     while (test){
     	cout << "Enter an Infix expression: "; // 輸入中序表達式
-    	finalInfix(infix, 100); // 存的是沒有空格的算式 
-    
+    	if(!finalInfix(infix, 100)){ // 存的是沒有空格的算式 //程式在106行
+    	    cout << "錯誤 -> 數字中間不能有空格！請重新輸入" << endl;
+	        continue;
+    	}   
     	// 檢查輸入括號
-		if (!checkParentheses(infix)) { //程式在90行
+		if (!checkParentheses(infix)) { //程式在120行
         	cout << "錯誤 -> 括號不成對！請重新輸入" << endl;
         	continue; // 回去重新輸入 
     	}
     	
-    	else if(!CheckOperator(infix)){ //程式在106行
+    	else if(!CheckOperator(infix)){ //程式在138行
     	    cout << "錯誤 -> 有非規定符號！請重新輸入" << endl;
         	continue; // 回去重新輸入 
     	}
     	
-    	else if(!CheckOperatornum(infix)){
+    	else if(!CheckOperatornum(infix)){//城市在149行
     	    cout << "錯誤 -> 運算子有問題！請重新輸入" << endl;
         	continue; // 回去重新輸入 
     	}
-    	
-    	else if (CheckSpaceBetNum(infix)) {
-    		cout << "錯誤 -> 數字中間不能有空格！請重新輸入" << endl;
-    		continue;
-		}
-		
     	else{
 			test=0;
 		}
