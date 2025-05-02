@@ -86,6 +86,37 @@ public:
     }
 };
 
+// 檢查數字中間有沒有空格
+bool CheckSpaceBetNum(const char* rawInput) {
+    for (int i = 0; rawInput[i]; i++) {
+        if (isdigit(rawInput[i]) || rawInput[i] == '.') {
+            int j = i + 1;
+            while (rawInput[j] == ' ') j++;
+            if (isdigit(rawInput[j]) || rawInput[j] == '.') return true;
+        }
+    }
+    return false;
+}
+
+// 把 infix裡面的空格去掉
+bool finalInfix(char* infix, int size) {
+    char temp[100]; 
+    cin.getline(temp, 100);
+
+    if (CheckSpaceBetNum(temp)) {
+        return false;
+    }
+
+    int j = 0;
+    for (int i = 0; temp[i] != '\0'; i++) {
+        if (temp[i] != ' ') {
+            infix[j++] = temp[i];
+        }
+    }
+    infix[j] = '\0';
+    return true;
+}
+
 // 檢查輸入括號是否對稱出現
 bool checkParentheses(const char* infix){
 	int count = 0; 
@@ -103,11 +134,12 @@ bool checkParentheses(const char* infix){
 	if (count == 0) return true;
 	else return false;
 }
-//檢查輸入符號是否輔合要求
-bool CheckOperator(const char* postfix){
-    for(int i = 0 ; postfix[i] != '\0' ; i++){
-        char c = postfix[i];
-        if (!isdigit(c) && c != '+' && c != '-' && c != '*' && c != '/' && c != '%' && c != '^' && c != '.'  && c != ' ') {
+
+//檢查輸入符號是否符合要求
+bool CheckOperator(const char* infix){
+    for(int i = 0 ; infix[i] != '\0' ; i++){
+        char c = infix[i];
+        if (!isdigit(c) && c != '+' && c != '-' && c != '*' && c != '/' && c != '%' && c != '^' && c != '.'  && c != ' '  && c != '('  && c != ')') {
             return false;
         }
     }
@@ -115,18 +147,37 @@ bool CheckOperator(const char* postfix){
 }
 
 //檢查運算符號數量
-bool CheckOperatornum(const char *postfix){//小數部分還沒處理
+bool CheckOperatornum(const char *infix){
     int opnum = 0;
     int nunum = 0;
-    for(int i = 0 ; postfix[i] != '\0' ; i++){
-        char c = postfix[i];
-        if ( c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^')
-            opnum++;
-        else if(isdigit(c)) nunum++;
-        else if(c == ' ') continue;
+    
+    for(int i = 0 ; infix[i] != '\0' ; i++){
+        char c = infix[i];
+        if ( c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^'){
+			if (c == '-' && (i == 0 || infix[i - 1] == '(')) {
+                // 判斷 -是運算子還是負號，負號會在第一位或是 (後面 
+                
+                continue;
+            }
+			opnum++;
+		}
+        
+		// 負數跟小數點    
+        else if (isdigit(c) || (c == '-' && (i == 0 || infix[i - 1] == '(') && isdigit(infix[i + 1]))){
+            nunum++; 
+            if (infix[i] == '-'){ // 負號跳過 
+            	i++;
+			}
+            while (isdigit(infix[i]) || infix[i] == '.') { 
+                i++; // 有小數點就跳過後面數字部分
+            }
+            i--; 
+        }
     }
-    return opnum == nunum-1;
+    
+    return opnum == nunum - 1; // 運算子數量 =數字數量 -1
 }
+
 // 判斷運算子(加減乘除) 的優先順序
 int precedence(char op) {
 	if (op == '+' || op == '-') return 1;
@@ -199,13 +250,15 @@ double evaluatePostfix(const char* postfix) {
         char c = postfix[i]; //讀 postfix每一個字 
 		
         // 如果是數字就加進堆疊
-        if (isdigit(c) || (c == '-' && (i == 0 || postfix[i-1] == '('))) {
+        if (isdigit(c) || (c == '-' && (i == 0 || postfix[i - 1] == ' '))){
             //double num = c - '0'; // c - '0'是用 ASCII碼 
             double num = 0;
             
-            if (postfix[i] == '-'){
-            	i++; // 如果是負數就直接讀數字是多少，等下再加回去 
-			}
+            bool isNegative = false;
+            if (postfix[i] == '-') {
+                isNegative = true;
+                i++; // 跳過負號
+            }
             
             while (isdigit(postfix[i])) {
         		num = num * 10 + (postfix[i] - '0'); // 讀到的第一個數字 num還是 0，第二個數字時第一個數字就要 *10變成十位數 
@@ -225,7 +278,8 @@ double evaluatePostfix(const char* postfix) {
     			}
     			num = num + decimal; // 整數加上小數部分 
             }
-            if (c == '-'){ // 如果剛剛讀的是負數，現在把負號加回去 
+            
+            if (isNegative ){ // 如果剛剛讀的是負數，現在把負號加回去 
             	num = -num;
 			}
             stack.push(num);
@@ -251,36 +305,40 @@ double evaluatePostfix(const char* postfix) {
     return stack.pop(); // 最後的答案
 }
 
+
 int main() {
     char infix[100], postfix[100];
     int test =1;
     while (test){
-    	cout << "Enter an Infix expression: ";
-    	cin >> infix; // 輸入中序表達式
-    
+    	cout << "Enter an Infix expression: "; // 輸入中序表達式
+    	if(finalInfix(infix, 100));{ // 存的是沒有空格的算式 //程式在106行
+    	    cout << "錯誤 -> 數字中間不能有空格！請重新輸入" << endl;
+	        continue;
+    	}   
     	// 檢查輸入括號
-		if (!checkParentheses(infix)) {//程式在90行
-        	cout << "錯誤 -> 括號不成對!!！ "<< "請重新輸入" << endl;
+		if (!checkParentheses(infix)) { //程式在120行
+        	cout << "錯誤 -> 括號不成對！請重新輸入" << endl;
         	continue; // 回去重新輸入 
     	}
     	
-    	InfixToPostfix(infix, postfix); // 轉換為後序表達式
-    	cout << postfix << endl;
-    	if(!CheckOperator(postfix)){//程式在106行
-    	    cout << "錯誤 -> 有非規定符號!!！請重新輸入" << endl;
+    	else if(!CheckOperator(infix)){ //程式在138行
+    	    cout << "錯誤 -> 有非規定符號！請重新輸入" << endl;
         	continue; // 回去重新輸入 
     	}
-    	else if(!CheckOperatornum(postfix)){
-    	    cout << "錯誤 -> 算式有問題!!！請重新輸入" << endl;
+    	
+    	else if(!CheckOperatornum(infix)){//城市在149行
+    	    cout << "錯誤 -> 運算子有問題！請重新輸入" << endl;
         	continue; // 回去重新輸入 
     	}
-    	else
-    	    test=0;
+    	else{
+			test=0;
+		}
+    	    
     }
-	
     
+	InfixToPostfix(infix, postfix); // 轉換為後序表達式	
     cout << "Postfix expression: " << postfix << endl; // 輸出後序表達式
-
+	
 	double result = evaluatePostfix(postfix);
 	if (fabs(result - round(result)) < 1e-9) {
         cout << "Result: " << fixed << setprecision(1) << result << endl;
@@ -292,3 +350,9 @@ int main() {
     
     return 0;
 }
+
+//可以輸入有空格的算式3. 
+//括號是否對稱出現
+//輸入符號是否符合要求
+//運算符號數量有沒有多(負數不算一個運算子)
+//負數加減做好了
