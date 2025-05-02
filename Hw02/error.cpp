@@ -55,7 +55,7 @@ public:
 };
 
 struct DoubleNode {
-    double data;//儲存有小數的數值
+    double data; //儲存有小數的數值
     DoubleNode* next;
 };
 //計算數值 IntStack
@@ -161,6 +161,23 @@ bool CheckOperatornum(const char *infix){
     return opnum == nunum - 1; // 運算子數量 =數字數量 -1
 }
 
+// 看數字中間有沒有運算子(原本輸入 -> 1 23+1 = 124) 
+bool CheckOpeBetNum(const char *infix){
+	bool lastIsNum = false; // 前面是不是數字 
+	for(int i = 0 ; infix[i] != '\0' ; i++){
+		if (isdigit(infix[i])){ // 第 i個是數字 
+			if (lastIsNum){ // 如果前一個也是數字 
+				return true;
+			}
+			lastIsNum = true;
+		}
+		else if (infix[i] == '+' || infix[i] == '-' || infix[i] == '*' || infix[i] == '/' || infix[i] == '%' || infix[i] == '^' || infix[i] == '(' || infix[i] == ')'){
+			lastIsNum = false; // 現在不是數字 
+		}
+	}
+	return false;
+} 
+
 // 判斷運算子(加減乘除) 的優先順序
 int precedence(char op) {
 	if (op == '+' || op == '-') return 1;
@@ -180,18 +197,24 @@ void InfixToPostfix(const char* infix, char* postfix) {
         
 		// 如果是英文或數字、第一位就是 -號，或是 (後面是負號就直接加入到 postfix 
         if (isalnum(c) || (c == '-' && (i == 0 || infix[i-1] == '('))) {
+        	bool hasDecimal = false;
             if (infix[i] == '-'){
             	postfix[j++] = c;
             	i++;
-            	c = infix[i]; // 把負號跟數字合成一個數 
-			}
-            while (isdigit(infix[i]) || infix[i] == '.') {
-                postfix[j++] = c;// 只要還是數字或 . 就繼續加到 postfix
-                i++;
-            	c = infix[i];
+            	//c = infix[i]; // 把負號跟數字合成一個數 
+			
+            	while (isdigit(infix[i]) || (infix[i] == '.' && !hasDecimal)){ // 如果是數字就繼續加進去目前的數字，如果是小數點那現在這個數字要沒有出現過小數點 
+                	if (infix[i] == '.') { // 有小數點了 
+						hasDecimal = true;
+					} 
+					postfix[j++] = c;// 只要還是數字或 . 就繼續加到 postfix
+                		
+            		c = infix[i];
+					i++;
+            	} 
             }
-            postfix[j++] = ' '; // 後面沒有數字後加一個空隔
-            i--; // 讀完這個數之後會 i++，所以要減回去 
+        	postfix[j++] = ' '; // 後面沒有數字後加一個空隔
+        	i--; // 讀完這個數之後會 i++，所以要減回去 
         }
         // 如果是 (，就直接放到 stack
         else if (c == '(') {
@@ -262,7 +285,7 @@ double evaluatePostfix(const char* postfix) {
     			num = num + decimal; // 整數加上小數部分 
             }
             
-            if (isNegative ){ // 如果剛剛讀的是負數，現在把負號加回去 
+            if (isNegative){ // 如果剛剛讀的是負數，現在把負號加回去 
             	num = -num;
 			}
             stack.push(num);
@@ -306,10 +329,17 @@ int main() {
     	    cout << "錯誤 -> 有非規定符號！請重新輸入" << endl;
         	continue; // 回去重新輸入 
     	}
+    	
     	else if(!CheckOperatornum(infix)){
     	    cout << "錯誤 -> 運算子有問題！請重新輸入" << endl;
         	continue; // 回去重新輸入 
     	}
+    	
+    	else if(CheckOpeBetNum(infix)){
+    	    cout << "錯誤 -> 數字中間沒有運算子！請重新輸入" << endl;
+        	continue; // 回去重新輸入 
+    	}
+    	
     	else{
 			test=0;
 		}
@@ -336,3 +366,4 @@ int main() {
 //輸入符號是否符合要求
 //運算符號數量有沒有多(負數不算一個運算子)
 //負數加減做好了
+//數字中間如果有空格但沒有運算符號要重新輸入算式 
