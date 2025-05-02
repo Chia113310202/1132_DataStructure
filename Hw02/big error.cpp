@@ -292,7 +292,10 @@ double evaluatePostfix(const char* postfix) {
         else if(c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%') {
             double b = stack.pop(); // 堆疊最上面的數字 
             double a = stack.pop(); // 最上面數字的下一個 
-
+            if ((c == '/' || c == '%') && b == 0) {
+                cout << "錯誤 -> 除以零！" << endl;
+                exit(1);
+            }
             if (c == '+') stack.push(a + b);
             else if (c == '-') stack.push(a - b);
             else if (c == '*') stack.push(a * b);
@@ -311,7 +314,7 @@ int main() {
     int test =1;
     while (test){
     	cout << "Enter an Infix expression: "; // 輸入中序表達式
-    	if(finalInfix(infix, 100));{ // 存的是沒有空格的算式 //程式在106行
+    	if(!finalInfix(infix, 100)){ // 存的是沒有空格的算式 //程式在106行
     	    cout << "錯誤 -> 數字中間不能有空格！請重新輸入" << endl;
 	        continue;
     	}   
