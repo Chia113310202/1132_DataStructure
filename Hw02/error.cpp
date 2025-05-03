@@ -86,35 +86,18 @@ public:
     }
 };
 
-// 檢查數字中間有沒有空格
-bool CheckSpaceBetNum(const char* rawInput) {
-    for (int i = 0; rawInput[i]; i++) {
-        if (isdigit(rawInput[i]) || rawInput[i] == '.') {
-            int j = i + 1;
-            while (rawInput[j] == ' ') j++;
-            if (isdigit(rawInput[j]) || rawInput[j] == '.') return true;
-        }
-    }
-    return false;
-}
-
 // 把 infix裡面的空格去掉
-bool finalInfix(char* infix, int size) {
+void finalInfix(char* infix, int size) {
     char temp[100]; 
-    cin.getline(temp, 100);
-
-    if (CheckSpaceBetNum(temp)) {
-        return false;
-    }
+    cin.getline(temp, 100); // 可以輸入有空格的算式到 temp
 
     int j = 0;
     for (int i = 0; temp[i] != '\0'; i++) {
-        if (temp[i] != ' ') {
+        if (temp[i] != ' ') { // 不是空格就加到 infix 
             infix[j++] = temp[i];
         }
     }
-    infix[j] = '\0';
-    return true;
+    infix[j] = '\0'; // 結尾
 }
 
 // 檢查輸入括號是否對稱出現
@@ -311,22 +294,19 @@ int main() {
     int test =1;
     while (test){
     	cout << "Enter an Infix expression: "; // 輸入中序表達式
-    	if(!finalInfix(infix, 100)){ // 存的是沒有空格的算式 //程式在106行
-    	    cout << "錯誤 -> 數字中間不能有空格！請重新輸入" << endl;
-	        continue;
-    	}   
+    	finalInfix(infix, 100); // 存的是沒有空格的算式 
+    
     	// 檢查輸入括號
-		if (!checkParentheses(infix)) { //程式在120行
+		if (!checkParentheses(infix)) { //程式在90行
         	cout << "錯誤 -> 括號不成對！請重新輸入" << endl;
         	continue; // 回去重新輸入 
     	}
     	
-    	else if(!CheckOperator(infix)){ //程式在138行
+    	else if(!CheckOperator(infix)){ //程式在106行
     	    cout << "錯誤 -> 有非規定符號！請重新輸入" << endl;
         	continue; // 回去重新輸入 
     	}
-    	
-    	else if(!CheckOperatornum(infix)){//城市在149行
+    	else if(!CheckOperatornum(infix)){
     	    cout << "錯誤 -> 運算子有問題！請重新輸入" << endl;
         	continue; // 回去重新輸入 
     	}
@@ -351,7 +331,7 @@ int main() {
     return 0;
 }
 
-//可以輸入有空格的算式3. 
+//可以輸入有空格的算式
 //括號是否對稱出現
 //輸入符號是否符合要求
 //運算符號數量有沒有多(負數不算一個運算子)
