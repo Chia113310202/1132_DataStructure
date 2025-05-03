@@ -174,18 +174,19 @@ void InfixToPostfix(const char* infix, char* postfix) {
             }
             postfix[j++] = ' ';
             i--;
-        } else if (c == '(') {
+        } 
+        else if (c == '(') 
             stack.push(c);
-        } else if (c == ')') {
+        else if (c == ')') {
             while (!stack.isEmpty()) {
                 char top = stack.pop();
                 if (top == '(') break;
                 postfix[j++] = top; postfix[j++] = ' ';
             }
-        } else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%') {
-            while (!stack.isEmpty() && precedence(stack.peek()) >= precedence(c)) {
+        } 
+        else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%') {
+            while (!stack.isEmpty() && precedence(stack.peek()) >= precedence(c)) 
                 postfix[j++] = stack.pop(); postfix[j++] = ' ';
-            }
             stack.push(c);
         }
     }
