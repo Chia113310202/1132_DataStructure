@@ -65,9 +65,9 @@ public:
         // if判斷式，如果最大的不是父節點，交換並繼續堆化                   
         // 遞迴處理受影響的子樹
         if (largest != i) {
-            int temp = heap[i];
-            heap[i] = heap[largest];
-            heap[largest] = temp;
+            int temp = heap[i]; // 暫存目前節點的值
+            heap[i] = heap[largest]; // 把比較大的子節點移到父節點
+            heap[largest] = temp; // 把原本父節點的值放到子節點
             heapify(largest);
         }
     }
@@ -83,7 +83,7 @@ public:
 
 int main() {
     // 從文件讀取輸入元素
-    string filename = "C:/Users/CNC/Desktop/Lab09/input2.txt";//請貼上input檔案的正確路徑
+    string filename = "C:/Users/user/Desktop/input3.txt";//請貼上input檔案的正確路徑
     vector<int> arr = readFromFile(filename);//讀取數據
 
     if (arr.empty()) {// 如果數據為空
@@ -107,4 +107,3 @@ int main() {
     system("pause");
     return 0;
 }
-
