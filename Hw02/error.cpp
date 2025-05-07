@@ -224,15 +224,15 @@ double evaluatePostfix(const char* postfix) {
             bool isNegative = false;
             
             // 如果是負號開頭，設定為負數
-            if (postfix[i] == '-') 
+            if (postfix[i] == '-') {
                 isNegative = true; 
                 i++;//跳過負號
-                
+            }   
             //讀取整數部分
-            while (isdigit(postfix[i])) 
+            while (isdigit(postfix[i])) {
                 num = num * 10 + (postfix[i] - '0'); // 組合數字
                 i++; 
-                
+            }   
             //讀取小數部分
             if (postfix[i] == '.') {
                 i++;//跳過小數點
