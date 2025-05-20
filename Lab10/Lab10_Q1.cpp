@@ -67,19 +67,43 @@ public:
             q.pop();// 將該節點從queue中刪除
             cout << current->value << " ";
             if (current->left) q.push(current->left);  // 將左子節點的指標加入queue
-            if (current->right) q.push(current->right);// 將右子節點的指標加入queue
+            if (current->right) q.push(current->right);// 將左子節點的指標加入queue
         }
-        
-        int nodeValue;
-        cin >> nodeValue >> endl;
-        int nodeValue = q.front();
     }
-    void searchNode(TreeNode* root){
-        int nodeValue;
-        cin >> nodeValue >> endl;
-        
+
+    // 計算layer總和
+    bool levelSum(TreeNode* root, int layer, int& levelsum) {
+        queue<TreeNode*> q;
+        q.push(root);
+        int level = 0; // 目前層數
+        levelsum = 0; // 初始化總和
+
+        while (!q.empty()) {
+            int levelsize = q.size(); // 目前層數的節點數量
+
+            for (int i = 0; i < levelsize; ++i) {
+                TreeNode* node = q.front();
+                q.pop();
+
+                // 如果目前層數是要查詢的層數
+                if (level == layer) {
+                    // 就把這層所有的數加起來
+                    levelsum += node->value;
+                }
+
+                // 把這一層的子節點先加進queue，這樣下一次while才有節點可以處理
+                if (node->left) q.push(node->left);
+                if (node->right) q.push(node->right);
+            }
+
+            // 如果剛剛處理的是要查詢的層數，就回傳加總完了
+            if (level == layer) return true;
+
+            level++; // 到下一層
+        }
+
+        return false; // 如果層數超過樹高
     }
-        
 };
 
 int main() {
@@ -87,13 +111,25 @@ int main() {
     vector<int> arr = { 1, 2, 3, 4, 5, 6, 7, 8, 9, NULL, NULL, 10, 11, NULL, NULL };
     tree.buildTree(arr);
 
-    cout << "DFS Result: ";
-    tree.Depth_first_search(tree.root);
-    cout << endl;
+    //cout << "DFS Result: ";
+    //tree.Depth_first_search(tree.root);
+    //cout << endl;
 
     cout << "BFS Result: ";
     tree.Breadth_first_search(tree.root);
     cout << endl;
+
+    int layer;
+    cout << "請輸入要查詢的層數（從 0 開始）: ";
+    cin >> layer;
+
+    int levelsum;
+    if (tree.levelSum(tree.root, layer, levelsum)) {
+        cout << "第 " << layer << " 層的總和為: " << levelsum << endl;
+    }
+    else {
+        cout << "超過樹高" << endl;
+    }
 
     system("pause");
     return 0;
