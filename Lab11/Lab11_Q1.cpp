@@ -85,7 +85,7 @@ void BubbleSort(vector<Product>& products) {
 
 int main() {
     // 從文件讀取輸入元素
-    string filename = "C:/Users/user/Desktop/DS Lab11/input2.txt"; // 貼上input檔案的正確路徑
+    string filename = "C:/Users/user/Desktop/DS Lab11/input3.txt"; // 貼上input檔案的正確路徑
     vector<Product> products = readFromFile(filename); // 讀取數據
 
     if (products.empty()) { // 如果數據為空
@@ -95,6 +95,7 @@ int main() {
 
     BubbleSort(products); // 呼叫BubbleSort，排序products
 
+    cout << "商品排序:" << endl;
     for (const auto& p : products) { // auto用來自動推導變數類型 
         cout << p.getName() << endl;
     }
